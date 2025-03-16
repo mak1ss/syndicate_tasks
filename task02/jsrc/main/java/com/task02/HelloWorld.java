@@ -2,6 +2,7 @@ package com.task02;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
 import com.syndicate.deployment.annotations.lambda.LambdaUrlConfig;
 import com.syndicate.deployment.model.RetentionSetting;
@@ -19,10 +20,12 @@ import com.syndicate.deployment.model.lambda.url.InvokeMode;
         authType = AuthType.NONE,
         invokeMode = InvokeMode.BUFFERED
 )
-public class HelloWorld implements RequestHandler<Request, Response> {
+public class HelloWorld implements RequestHandler<Request, LambdaResponse> {
 
-    public Response handleRequest(Request request, Context context) {
-        System.out.println("Hello from lambda");
+    private final System.Logger log = System.getLogger(HelloWorld.class.getName());
+
+    public LambdaResponse handleRequest(Request request, Context context) {
+        log.log(System.Logger.Level.INFO, "Hello from Lambda!");
 
         String path = request.getRequestContext().getHttp().getPath();
         String method = request.getRequestContext().getHttp().getMethod();
@@ -38,6 +41,13 @@ public class HelloWorld implements RequestHandler<Request, Response> {
                     path, method);
         }
 
-        return new Response(status, msg);
+        Response rsp = new Response(status, msg);
+
+        try {
+            return new LambdaResponse(status, rsp.toJson());
+        } catch (JsonProcessingException e) {
+            log.log(System.Logger.Level.ERROR, "Error occurred during JSON serialization", e);
+            return new LambdaResponse(500, "Error occurred during JSON serialization");
+        }
     }
 }

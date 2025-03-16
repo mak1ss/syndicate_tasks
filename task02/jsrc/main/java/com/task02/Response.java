@@ -1,14 +1,17 @@
 package com.task02;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class Response {
 
     private Integer statusCode;
 
-    private String body;
+    private String message;
 
     public Response(Integer statusCode, String message) {
         this.statusCode = statusCode;
-        this.body = message;
+        this.message = message;
     }
 
     public Integer getStatusCode() {
@@ -19,11 +22,16 @@ public class Response {
         this.statusCode = statusCode;
     }
 
-    public String getBody() {
-        return body;
+    public String getMessage() {
+        return message;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String toJson() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(this);
     }
 }
