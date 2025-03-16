@@ -8,39 +8,36 @@ import com.syndicate.deployment.model.RetentionSetting;
 import com.syndicate.deployment.model.lambda.url.AuthType;
 import com.syndicate.deployment.model.lambda.url.InvokeMode;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @LambdaHandler(
-    lambdaName = "hello_world",
-	roleName = "hello_world-role",
-	isPublishVersion = true,
-	aliasName = "${lambdas_alias_name}",
-	logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
+        lambdaName = "hello_world",
+        roleName = "hello_world-role",
+        isPublishVersion = true,
+        aliasName = "${lambdas_alias_name}",
+        logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )
 @LambdaUrlConfig(
-		authType = AuthType.NONE,
-		invokeMode = InvokeMode.BUFFERED
+        authType = AuthType.NONE,
+        invokeMode = InvokeMode.BUFFERED
 )
-public class HelloWorld implements RequestHandler<Request, Map<String, Object>> {
+public class HelloWorld implements RequestHandler<Request, Response> {
 
-	public Map<String, Object> handleRequest(Request request, Context context) {
-		System.out.println("Hello from lambda");
+    public Response handleRequest(Request request, Context context) {
+        System.out.println("Hello from lambda");
 
-		Map<String, Object> resultMap = new HashMap();
-		String path = request.getRequestContext().getHttp().getPath();
-		String method = request.getRequestContext().getHttp().getMethod();
+        String path = request.getRequestContext().getHttp().getPath();
+        String method = request.getRequestContext().getHttp().getMethod();
+        int status;
+        String msg;
 
-		if(method.equals("GET") && path.equals("/hello")) {
-			resultMap.put("statusCode", 200);
-			resultMap.put("body", "Hello from Lambda");
-		} else {
-			resultMap.put("statusCode", 400);
-			resultMap.put("statusMessage", String.format(
-					"Bad request syntax or unsupported method. Request path: %s. HTTP method: %s",
-					path, method));
-		}
+        if (method.equals("GET") && path.equals("/hello")) {
+            status = 200;
+            msg = "Hello from Lambda";
+        } else {
+            status = 400;
+            msg = String.format("Bad request syntax or unsupported method. Request path: %s. HTTP method: %s",
+                    path, method);
+        }
 
-		return resultMap;
-	}
+        return new Response(status, msg);
+    }
 }
