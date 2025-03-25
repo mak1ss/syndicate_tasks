@@ -29,4 +29,12 @@ public class Request {
     public void setContent(Person content) {
         this.content = content;
     }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "principalId=" + principalId +
+                ", content=" + content +
+                '}';
+    }
 }
