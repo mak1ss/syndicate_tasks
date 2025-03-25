@@ -42,9 +42,9 @@ public class Response {
 
         private String createdAt;
 
-        private Person body;
+        private Content body;
 
-        public Event(String id, Integer principalId, String createdAt, Person person) {
+        public Event(String id, Integer principalId, String createdAt, Content person) {
             this.id = id;
             this.principalId = principalId;
             this.createdAt = createdAt;
@@ -57,7 +57,7 @@ public class Response {
             this.createdAt = items.get("createdAt").getS();
             String name = items.get("body").getM().get("name").getS();
             String surname = items.get("body").getM().get("surname").getS();
-            this.body = new Person(name, surname);
+            this.body = new Content(name, surname);
         }
 
         public void setId(String id) {
@@ -72,7 +72,7 @@ public class Response {
             this.createdAt = createdAt;
         }
 
-        public void setBody(Person body) {
+        public void setBody(Content body) {
             this.body = body;
         }
 
@@ -88,7 +88,7 @@ public class Response {
             return createdAt;
         }
 
-        public Person getBody() {
+        public Content getBody() {
             return body;
         }
     }

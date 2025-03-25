@@ -1,17 +1,17 @@
 package com.task05;
 
-public class Person {
+public class Content {
 
     private String name;
 
     private String surname;
 
-    public Person(String name, String surname) {
+    public Content(String name, String surname) {
         this.name = name;
         this.surname = surname;
     }
 
-    public Person() {
+    public Content() {
     }
 
     public void setName(String name) {
@@ -32,7 +32,7 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person{" +
+        return "Content{" +
                 "name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 '}';

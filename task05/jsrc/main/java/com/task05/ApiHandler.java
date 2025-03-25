@@ -5,6 +5,10 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.*;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syndicate.deployment.annotations.environment.EnvironmentVariable;
 import com.syndicate.deployment.annotations.environment.EnvironmentVariables;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
@@ -26,23 +30,39 @@ import java.util.UUID;
 		@EnvironmentVariable(key = "table_name", value = "${target_table}"),
 		@EnvironmentVariable(key = "region", value = "${region}")}
 )
-public class ApiHandler implements RequestHandler<Request, Response> {
+public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
 	private AmazonDynamoDB amazonDynamoDB;
 
 	String tableName = System.getenv("table_name");
 	String region = System.getenv("region");
 
-	public Response handleRequest(Request personRequest, Context context) {
+	public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
 		var logger = context.getLogger();
-		logger.log("Received request: " + personRequest);
+		logger.log("Received request: " + request.getBody());
+		ObjectMapper mapper = new ObjectMapper();
 
-		this.initDynamoDbClient();
+        Request personRequest = null;
+        try {
+            personRequest = mapper.readValue(request.getBody(), Request.class);
+        } catch (JsonProcessingException e) {
+			logger.log("Error occurred during request body deserialization: " + e.getMessage());
+        }
+        this.initDynamoDbClient();
 
 		var result = persistData(personRequest);
 		logger.log("Persisted data: " + result);
 
-		return new Response(201, new Response.Event(result));
+		var apiResponse = new APIGatewayProxyResponseEvent();
+		apiResponse.setStatusCode(201);
+
+        try {
+            apiResponse.setBody(mapper.writeValueAsString(new Response.Event(result)));
+        } catch (JsonProcessingException e) {
+			logger.log("Error occurred during request body serialization: " + e.getMessage());
+        }
+
+        return apiResponse;
 	}
 
 	private Map<String, AttributeValue> persistData(Request personRequest) throws ConditionalCheckFailedException {

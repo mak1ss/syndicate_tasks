@@ -4,9 +4,9 @@ public class Request {
 
     private Integer principalId;
 
-    private Person content;
+    private Content content;
 
-    public Request(Integer principalId, Person person) {
+    public Request(Integer principalId, Content person) {
         this.principalId = principalId;
         this.content = person;
     }
@@ -18,7 +18,7 @@ public class Request {
         return principalId;
     }
 
-    public Person getContent() {
+    public Content getContent() {
         return content;
     }
 
@@ -26,7 +26,7 @@ public class Request {
         this.principalId = principalId;
     }
 
-    public void setContent(Person content) {
+    public void setContent(Content content) {
         this.content = content;
     }
 
