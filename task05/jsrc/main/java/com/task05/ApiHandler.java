@@ -73,10 +73,12 @@ public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
 		attributesMap.put("id", new AttributeValue().withS(id));
 		attributesMap.put("principalId", new AttributeValue().withN(String.valueOf(personRequest.getPrincipalId())));
 		attributesMap.put("createdAt", new AttributeValue().withS(LocalDateTime.now().toString()));
-		attributesMap.put("body", new AttributeValue().withM(Map.of(
-				"name", new AttributeValue(personRequest.getContent().getName()),
-				"surname", new AttributeValue(personRequest.getContent().getSurname())
-		)));
+		Map<String, AttributeValue> bodyMap = new HashMap<>();
+		for (Map.Entry<String, String> entry : personRequest.getContent().entrySet()) {
+			bodyMap.put(entry.getKey(), new AttributeValue().withS(entry.getValue()));
+		}
+
+		attributesMap.put("body", new AttributeValue().withM(bodyMap));
 
 		PutItemRequest req = new PutItemRequest(tableName, attributesMap);
 		amazonDynamoDB.putItem(req);

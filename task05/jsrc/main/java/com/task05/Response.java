@@ -3,6 +3,7 @@ package com.task05;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Response {
 
@@ -42,22 +43,25 @@ public class Response {
 
         private String createdAt;
 
-        private Content body;
+        private Map<String, String> body;
 
-        public Event(String id, Integer principalId, String createdAt, Content person) {
+        public Event(String id, Integer principalId, String createdAt, Map<String, String> content) {
             this.id = id;
             this.principalId = principalId;
             this.createdAt = createdAt;
-            this.body = person;
+            this.body = content;
         }
 
         public Event(Map<String, AttributeValue> items) {
             this.id = items.get("id").getS();
             this.principalId = Integer.valueOf(items.get("principalId").getN());
             this.createdAt = items.get("createdAt").getS();
-            String name = items.get("body").getM().get("name").getS();
-            String surname = items.get("body").getM().get("surname").getS();
-            this.body = new Content(name, surname);
+            Map<String, AttributeValue> bodyMap = items.get("body").getM();
+            this.body = bodyMap.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            entry -> entry.getValue().getS()
+                    ));
         }
 
         public void setId(String id) {
@@ -72,10 +76,6 @@ public class Response {
             this.createdAt = createdAt;
         }
 
-        public void setBody(Content body) {
-            this.body = body;
-        }
-
         public String getId() {
             return id;
         }
@@ -88,8 +88,12 @@ public class Response {
             return createdAt;
         }
 
-        public Content getBody() {
+        public Map<String, String> getBody() {
             return body;
+        }
+
+        public void setBody(Map<String, String> body) {
+            this.body = body;
         }
     }
 }
