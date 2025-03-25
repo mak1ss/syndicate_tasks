@@ -57,7 +57,7 @@ public class ApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
 		apiResponse.setStatusCode(201);
 
         try {
-            apiResponse.setBody(mapper.writeValueAsString(new Response.Event(result)));
+            apiResponse.setBody(mapper.writeValueAsString(new Response(201, new Response.Event(result))));
         } catch (JsonProcessingException e) {
 			logger.log("Error occurred during request body serialization: " + e.getMessage());
         }
