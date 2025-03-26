@@ -10,6 +10,9 @@ import com.syndicate.deployment.annotations.environment.EnvironmentVariable;
 import com.syndicate.deployment.annotations.environment.EnvironmentVariables;
 import com.syndicate.deployment.annotations.events.RuleEventSource;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
+import com.syndicate.deployment.annotations.resources.Dependencies;
+import com.syndicate.deployment.annotations.resources.DependsOn;
+import com.syndicate.deployment.model.ResourceType;
 import com.syndicate.deployment.model.RetentionSetting;
 
 import java.time.Instant;
@@ -35,6 +38,17 @@ import java.util.stream.IntStream;
         @EnvironmentVariable(key = "region", value = "${region}"),
         @EnvironmentVariable(key = "bucket_name", value = "${target_bucket}")}
 )
+@Dependencies(value = {
+        @DependsOn(
+                name = "${target_bucket}",
+                resourceType = ResourceType.S3_BUCKET
+        ),
+        @DependsOn(
+                name = "uuid_trigger",
+                resourceType = ResourceType.CLOUDWATCH_RULE
+        )
+})
+
 public class UuidGenerator implements RequestHandler<Object, Void> {
 
     private AmazonS3 s3;
