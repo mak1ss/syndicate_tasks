@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
         eventType = EventSourceType.DYNAMODB_TRIGGER
 )
 @DynamoDbTriggerEventSource(
-        targetTable = "${target_table}",
+        targetTable = "Configuration",
         batchSize = 1
 )
 @EnvironmentVariables(value = {
