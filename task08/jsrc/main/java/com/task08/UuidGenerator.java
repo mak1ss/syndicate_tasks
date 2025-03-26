@@ -60,6 +60,7 @@ public class UuidGenerator implements RequestHandler<Object, Void> {
     public Void handleRequest(Object request, Context context) {
         var logger = context.getLogger();
         logger.log("Lambda handler invoked.");
+        initS3Storage();
 
         List<String> ids = IntStream.range(0, 10)
                 .mapToObj(i -> UUID.randomUUID().toString())
@@ -81,7 +82,6 @@ public class UuidGenerator implements RequestHandler<Object, Void> {
             logger.log("Error: " + e.getMessage());
         }
 
-        initS3Storage();
         return null;
     }
 
