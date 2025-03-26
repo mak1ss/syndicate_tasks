@@ -18,6 +18,8 @@ import com.syndicate.deployment.annotations.lambda.LambdaHandler;
 import com.syndicate.deployment.model.EventSourceType;
 import com.syndicate.deployment.model.RetentionSetting;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -76,10 +78,11 @@ public class AuditProducer implements RequestHandler<DynamodbEvent, Void> {
         updatedKeys.forEach(key -> {
             attributesMap.put("id", new AttributeValue().withS(id));
 
-            String modificationTime = DateTimeFormatter.ISO_INSTANT.format(
-                    record.getDynamodb().getApproximateCreationDateTime().toInstant().truncatedTo(ChronoUnit.MILLIS)
-            );
-            attributesMap.put("modificationTime", new AttributeValue().withS(modificationTime));
+            Date date = Date.from(record.getDynamodb().getApproximateCreationDateTime().toInstant());
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+            String formattedDate = dateFormat.format(date);
+
+            attributesMap.put("modificationTime", new AttributeValue().withS(formattedDate));
 
             attributesMap.put("itemKey", new AttributeValue().withS(key));
 
