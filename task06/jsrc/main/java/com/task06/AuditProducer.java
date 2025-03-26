@@ -36,13 +36,13 @@ import java.util.stream.Collectors;
         batchSize = 1
 )
 @EnvironmentVariables(value = {
-        @EnvironmentVariable(key = "audit_table", value = "${audit_table}"),
+        @EnvironmentVariable(key = "table_name", value = "${target_table}"),
         @EnvironmentVariable(key = "region", value = "${region}") }
 )
 public class AuditProducer implements RequestHandler<DynamodbEvent, Void> {
 
     private AmazonDynamoDB dynamoDB;
-    private final String auditTable = System.getenv("audit_table");
+    private final String auditTable = System.getenv("table_name");
     private final String region = System.getenv("region");
     private final ObjectMapper mapper = new ObjectMapper();
 
