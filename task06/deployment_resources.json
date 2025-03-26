@@ -50,7 +50,7 @@
     "autoscaling": [],
     "tags": {}
   },
-  "${audit_table}": {
+  "Audit": {
     "resource_type": "dynamodb_table",
     "hash_key_name": "id",
     "hash_key_type": "S",
