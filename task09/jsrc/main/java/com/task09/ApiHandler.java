@@ -38,12 +38,10 @@ import java.util.Map;
         authType = AuthType.NONE,
         invokeMode = InvokeMode.BUFFERED
 )
-@EnvironmentVariable(
-        key = "api_url", value = "${weather_api_url}"
-)
 public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
 
-    private final String apiUrl = System.getenv("api_url");
+    private final String apiUrl = "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41" +
+            "&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m";
 
     private final ObjectMapper mapper = new ObjectMapper();
 
