@@ -1,0 +1,9 @@
+.syndicate
+logs/
+.syndicate-config-*/
+
+/node_modules
+eslint.config.mjs
+package-lock.json
+package.json
+.eslintsrc.json
