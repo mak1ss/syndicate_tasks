@@ -1,7 +1,5 @@
 # Define the structure of your API with the GraphQL
 # schema definition language (SDL) here.
-scalar AWSJSON
-
 type Event {
 	id: ID!
 	userId: Int!
