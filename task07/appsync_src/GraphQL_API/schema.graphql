@@ -14,7 +14,7 @@ type Mutation {
 }
 
 type Query {
-	getEvent(id: String!): Event
+	getEvent(id: ID!): Event
 }
 
 schema {
