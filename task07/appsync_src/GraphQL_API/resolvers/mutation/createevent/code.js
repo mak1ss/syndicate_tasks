@@ -14,7 +14,7 @@ export function request(ctx) {
     return {
         operation: 'PutItem',
         key: {
-            id: util.dynamodb.toDynamoDB(util.autoUlid()),  
+            id: util.dynamodb.toDynamoDB(crypto.randomUUID()),  
         },
         attributeValues: util.dynamodb.toMapValues({
             userId: userId,
