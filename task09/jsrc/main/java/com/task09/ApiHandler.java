@@ -52,12 +52,11 @@ public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGate
         logger.log("Received request: " + path);
 
         try {
-            Map<String, Object> body;
             if (!path.equals("/weather")) {
                 String msg = String.format("Bad request syntax or unsupported method. " +
                                 "Request path: %s. HTTP method: %s",
                         path, request.getRequestContext().getHttp().getMethod());
-                body = Map.of(
+                Map<String, Object> body = Map.of(
                         "statusCode", 400,
                         "message", msg
                 );
@@ -68,21 +67,15 @@ public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGate
                         .build();
             } else {
                 WeatherClient client = new WeatherClient(apiUrl);
-
                 WeatherResponse weatherResponse = client.getRecentWeather();
 
                 if(weatherResponse != null) {
                     logger.log("Got recent weather response: " + weatherResponse);
                 }
 
-                body = Map.of(
-                        "statusCode", 200,
-                        "body", weatherResponse
-                );
-
                 response = APIGatewayV2HTTPResponse.builder()
                         .withStatusCode(200)
-                        .withBody(mapper.writeValueAsString(body))
+                        .withBody(mapper.writeValueAsString(weatherResponse))
                         .build();
             }
 
