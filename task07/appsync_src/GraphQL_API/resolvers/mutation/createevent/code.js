@@ -19,7 +19,7 @@ export function request(ctx) {
         attributeValues: util.dynamodb.toMapValues({
             userId: userId,
             createdAt: util.time.nowISO8601(), 
-            payload: payLoad
+            payLoad: payLoad
         })
     };
 }

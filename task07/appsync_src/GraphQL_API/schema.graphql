@@ -6,7 +6,7 @@ type Event {
 	id: String!
 	userId: Int!
 	createdAt: String!
-	payload: AWSJSON!
+	payLoad: AWSJSON!
 }
 
 type Mutation {
