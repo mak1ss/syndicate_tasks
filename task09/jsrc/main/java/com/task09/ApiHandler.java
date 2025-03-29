@@ -56,7 +56,7 @@ public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGate
             Map<String, Object> body;
             if (!path.equals("/weather")) {
                 String msg = String.format("Bad request syntax or unsupported method. " +
-                                "Request path: %s. HTTP method: %s.",
+                                "Request path: %s. HTTP method: %s",
                         path, request.getRequestContext().getHttp().getMethod());
                 body = Map.of(
                         "statusCode", 400,
@@ -85,7 +85,7 @@ public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGate
         } catch (JsonProcessingException e) {
             logger.log("Error occurred during JSON serialization: " + e.getMessage());
         } catch (Exception e) {
-            logger.log("Unknown error occurred: " + e.getMessage());
+            logger.log("Unknown error occurred: " + e);
         }
 
         return response;
