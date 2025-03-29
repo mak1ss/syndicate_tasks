@@ -6,7 +6,6 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.syndicate.deployment.annotations.environment.EnvironmentVariable;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
 import com.syndicate.deployment.annotations.lambda.LambdaLayer;
 import com.syndicate.deployment.annotations.lambda.LambdaUrlConfig;
@@ -50,6 +49,8 @@ public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGate
         var logger = context.getLogger();
         APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
 
+        logger.log("Received request: " + path);
+
         try {
             Map<String, Object> body;
             if (!path.equals("/weather")) {
@@ -69,6 +70,11 @@ public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGate
                 WeatherClient client = new WeatherClient(apiUrl);
 
                 WeatherResponse weatherResponse = client.getRecentWeather();
+
+                if(weatherResponse != null) {
+                    logger.log("Got recent weather response: " + weatherResponse);
+                }
+
                 body = Map.of(
                         "statusCode", 200,
                         "body", weatherResponse
@@ -85,6 +91,8 @@ public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGate
         } catch (Exception e) {
             logger.log("Unknown error occurred: " + e);
         }
+
+        logger.log("Returning response: " + response);
 
         return response;
     }
