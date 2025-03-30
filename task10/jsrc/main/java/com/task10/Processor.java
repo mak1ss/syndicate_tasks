@@ -141,8 +141,10 @@ public class Processor implements RequestHandler<APIGatewayV2HTTPEvent, APIGatew
 
         forecast.put("hourly", new AttributeValue().withM(hourly));
 
-        Map<String, AttributeValue> hourlyUnits = weatherResponse.getHourlyUnits().entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> new AttributeValue().withS(e.getValue())));
+        Map<String, AttributeValue> hourlyUnits = Map.of(
+                "temperature_2m", new AttributeValue().withS(weatherResponse.getHourlyUnits().get("temperature_2m")),
+                "time", new AttributeValue().withS(weatherResponse.getHourlyUnits().get("time"))
+        );
         forecast.put("hourly_units", new AttributeValue().withM(hourlyUnits));
 
         item.put("forecast", new AttributeValue().withM(forecast));
