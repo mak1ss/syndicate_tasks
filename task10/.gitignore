@@ -1,0 +1,7 @@
+.syndicate
+logs/
+.syndicate-config-*/
+
+/.idea
+
+!/lib/weather-sdk-1.0-SNAPSHOT.jar
