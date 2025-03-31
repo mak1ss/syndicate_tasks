@@ -87,7 +87,7 @@ public class PostReservationHandler implements RequestHandler<APIGatewayProxyReq
                 .toList();
 
         return existingReservations.stream()
-                .noneMatch(res -> isTimeOverlapping(res, reservation));
+                .anyMatch(res -> isTimeOverlapping(res, reservation));
     }
 
     private boolean isTimeOverlapping(Reservation existing, Reservation newReservation) {
