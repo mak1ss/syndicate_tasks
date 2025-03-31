@@ -67,7 +67,8 @@ public class PostReservationHandler implements RequestHandler<APIGatewayProxyReq
 
         ScanRequest scanRequest = new ScanRequest()
                 .withTableName(tablesTableName)
-                .withFilterExpression("number = :tableNum")
+                .withFilterExpression("#num = :tableNum")
+                .withExpressionAttributeNames(Map.of("#num", "number"))
                 .withExpressionAttributeValues(Map.of(
                         ":tableNum", new AttributeValue().withN(tableNumber.toString())));
 
@@ -83,8 +84,10 @@ public class PostReservationHandler implements RequestHandler<APIGatewayProxyReq
         logger.log("Checking for reservation overlapping: \n" + newReservation);
         ScanRequest scanRequest = new ScanRequest()
                 .withTableName(tablesTableName)
-                .withFilterExpression("number = :tableNum AND #dt = :dateVal")
-                .withExpressionAttributeNames(Map.of("#dt", "date"))
+                .withFilterExpression("#num = :tableNum AND #dt = :dateVal")
+                .withExpressionAttributeNames(Map.of(
+                        "#dt", "date",
+                        "#num", "number"))
                 .withExpressionAttributeValues(Map.of(
                         ":tableNum", new AttributeValue().withN(newReservation.getTableNumber().toString()),
                         ":dateVal", new AttributeValue().withS(newReservation.getDate().toString())
