@@ -22,13 +22,22 @@ public class CognitoService {
                 .messageAction(MessageActionType.SUPPRESS)
                 .username(signUp.email())
                 .temporaryPassword(signUp.password())
-                .userAttributes(AttributeType.builder()
+                .userAttributes(
+                        AttributeType.builder()
                                 .name("given_name")
                                 .value(signUp.firstName())
                                 .build(),
                         AttributeType.builder()
                                 .name("family_name")
                                 .value(signUp.lastName())
+                                .build(),
+                        AttributeType.builder()
+                                .name("email")
+                                .value(signUp.email())
+                                .build(),
+                        AttributeType.builder()
+                                .name("email_verified")
+                                .value("true")
                                 .build())
                 .build();
 
