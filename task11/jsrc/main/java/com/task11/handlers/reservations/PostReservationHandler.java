@@ -47,7 +47,7 @@ public class PostReservationHandler implements RequestHandler<APIGatewayProxyReq
 
             return new APIGatewayProxyResponseEvent()
                     .withStatusCode(200)
-                    .withBody(new JSONObject().put("id", id).toString());
+                    .withBody(new JSONObject().put("reservationId", id).toString());
         } catch (Exception e) {
             return new APIGatewayProxyResponseEvent()
                     .withStatusCode(400)

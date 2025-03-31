@@ -2,6 +2,7 @@ package com.task11.dto;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import org.json.JSONObject;
+import org.json.JSONPropertyName;
 
 import java.util.Map;
 
@@ -67,6 +68,7 @@ public class Table {
         this.places = places;
     }
 
+    @JSONPropertyName("isVip")
     public Boolean getVip() {
         return isVip;
     }
