@@ -41,7 +41,7 @@ public class GetTablesByIdHandler implements RequestHandler<APIGatewayProxyReque
 
             return new APIGatewayProxyResponseEvent()
                     .withStatusCode(200)
-                    .withBody(new JSONObject().put("table", new JSONObject(found)).toString());
+                    .withBody(new JSONObject(found).toString());
         } catch (Exception e) {
             return new APIGatewayProxyResponseEvent()
                     .withStatusCode(400)

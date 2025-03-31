@@ -10,6 +10,7 @@ import com.task11.dto.Reservation;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -31,7 +32,10 @@ public class PostReservationHandler implements RequestHandler<APIGatewayProxyReq
             if(!isTableExists(reservation.getTableNumber())) {
                 throw new IllegalArgumentException("Table " + reservation.getTableNumber() + " does not exist");
             }
-
+            if(isReservationOverlapping(reservation)) {
+                throw new IllegalArgumentException("Your reservation on table "
+                        + reservation.getTableNumber() + " is overlapping");
+            }
             Map<String, AttributeValue> item = new HashMap<>();
             String id = UUID.randomUUID().toString();
 
@@ -65,5 +69,29 @@ public class PostReservationHandler implements RequestHandler<APIGatewayProxyReq
         ScanResult result = dynamoDBClient.scan(scanRequest);
 
         return result.getItems() != null;
+    }
+
+    private boolean isReservationOverlapping(Reservation reservation) {
+        ScanRequest scanRequest = new ScanRequest()
+                .withTableName(tablesTableName)
+                .withFilterExpression("tableNumber = :tableNum AND #dt = :dateVal")
+                .withExpressionAttributeNames(Map.of("#dt", "date"))
+                .withExpressionAttributeValues(Map.of(
+                        ":tableNum", new AttributeValue().withN(reservation.getTableNumber().toString()),
+                        ":dateVal", new AttributeValue().withS(reservation.getDate().toString())
+                ));
+
+        ScanResult result = dynamoDBClient.scan(scanRequest);
+        List<Reservation> existingReservations = result.getItems().stream()
+                .map(Reservation::new)
+                .toList();
+
+        return existingReservations.stream()
+                .noneMatch(res -> isTimeOverlapping(res, reservation));
+    }
+
+    private boolean isTimeOverlapping(Reservation existing, Reservation newReservation) {
+        return !(newReservation.getSlotTimeEnd().isBefore(existing.getSlotTimeStart()) ||
+                newReservation.getSlotTimeStart().isAfter(existing.getSlotTimeEnd()));
     }
 }
