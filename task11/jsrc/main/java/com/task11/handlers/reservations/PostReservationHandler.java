@@ -45,6 +45,7 @@ public class PostReservationHandler implements RequestHandler<APIGatewayProxyReq
             item.put("id", new AttributeValue().withS(id));
             item.put("tableNumber", new AttributeValue().withN(String.valueOf(reservation.getTableNumber())));
             item.put("clientName", new AttributeValue().withS(String.valueOf(reservation.getClientName())));
+            item.put("phoneNumber", new AttributeValue().withS(String.valueOf(reservation.getPhoneNumber())));
             item.put("date", new AttributeValue().withS(reservation.getDate().toString()));
             item.put("slotTimeStart", new AttributeValue().withS(String.valueOf(reservation.getSlotTimeStart())));
             item.put("slotTimeEnd", new AttributeValue().withS(String.valueOf(reservation.getSlotTimeEnd())));
@@ -83,11 +84,10 @@ public class PostReservationHandler implements RequestHandler<APIGatewayProxyReq
     private boolean isReservationOverlapping(Reservation newReservation) {
         logger.log("Checking for reservation overlapping: \n" + newReservation);
         ScanRequest scanRequest = new ScanRequest()
-                .withTableName(tablesTableName)
-                .withFilterExpression("#num = :tableNum AND #dt = :dateVal")
+                .withTableName(reservationsTableName)
+                .withFilterExpression("tableNumber = :tableNum AND #dt = :dateVal")
                 .withExpressionAttributeNames(Map.of(
-                        "#dt", "date",
-                        "#num", "number"))
+                        "#dt", "date"))
                 .withExpressionAttributeValues(Map.of(
                         ":tableNum", new AttributeValue().withN(newReservation.getTableNumber().toString()),
                         ":dateVal", new AttributeValue().withS(newReservation.getDate().toString())
