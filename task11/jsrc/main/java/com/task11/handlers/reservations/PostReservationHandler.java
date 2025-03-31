@@ -46,7 +46,7 @@ public class PostReservationHandler implements RequestHandler<APIGatewayProxyReq
             dynamoDBClient.putItem(putItemRequest);
 
             return new APIGatewayProxyResponseEvent()
-                    .withStatusCode(201)
+                    .withStatusCode(200)
                     .withBody(new JSONObject().put("id", id).toString());
         } catch (Exception e) {
             return new APIGatewayProxyResponseEvent()
