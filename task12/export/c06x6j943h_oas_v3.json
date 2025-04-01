@@ -386,13 +386,17 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "idToken": { "type": "string" }
+                    "idToken": {
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
           },
-          "400": { "description": "Bad Request. Invalid credentials." }
+          "400": {
+            "description": "Bad Request. Invalid credentials."
+          }
         },
         "x-amazon-apigateway-integration": {
           "httpMethod": "POST",
@@ -469,15 +473,27 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "firstName": { "type": "string" },
-                  "lastName": { "type": "string" },
-                  "email": { "type": "string", "format": "email" },
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
                   "password": {
                     "type": "string",
                     "pattern": "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[$%^*-_]).{12,}$"
                   }
                 },
-                "required": ["firstName", "lastName", "email", "password"]
+                "required": [
+                  "firstName",
+                  "lastName",
+                  "email",
+                  "password"
+                ]
               }
             }
           }
@@ -500,7 +516,9 @@
               }
             }
           },
-          "400": { "description": "Bad Request. Invalid input." }
+          "400": {
+            "description": "Bad Request. Invalid input."
+          }
         },
         "x-amazon-apigateway-integration": {
           "httpMethod": "POST",
@@ -568,6 +586,8 @@
     },
     "/tables/{tableId}": {
       "get": {
+        "summary": "Get a specific table",
+        "description": "Returns details of a specific table by its ID.",
         "parameters": [
           {
             "name": "tableId",
@@ -580,7 +600,7 @@
         ],
         "responses": {
           "200": {
-            "description": "200 response",
+            "description": "Table details.",
             "headers": {
               "Access-Control-Allow-Origin": {
                 "schema": {
@@ -590,12 +610,11 @@
             },
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Empty"
-                }
+                "schema": { "$ref": "#/components/schemas/Table" }
               }
             }
-          }
+          },
+          "400": { "description": "Bad Request." }
         },
         "security": [
           {
@@ -746,7 +765,9 @@
         "in": "header",
         "x-amazon-apigateway-authtype": "cognito_user_pools",
         "x-amazon-apigateway-authorizer": {
-          "x-syndicate-cognito-userpool-names": ["${booking_userpool}"],
+          "x-syndicate-cognito-userpool-names": [
+            "${booking_userpool}"
+          ],
           "type": "cognito_user_pools"
         }
       }
